@@ -27,5 +27,11 @@ fun removeDuplicates(nums: IntArray): Int {
  * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/x2zsx1/">买卖股票的最佳时机 II</a>
  */
 fun maxProfit(prices: IntArray): Int {
-    return 0
+    if (prices.size < 2) return 0
+    var profit = 0
+    for (i in 1 until prices.size) { // 贪心算法
+        val temp = prices[i] - prices[i-1]
+        profit += Math.max(temp, 0)
+    }
+    return profit
 }
