@@ -111,3 +111,118 @@ fun singleNumber2(nums: IntArray): Int {
     }
     return temp
 }
+
+/**
+ * 两个数组的交集 II
+ *
+ * 给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/x2y0c2/">两个数组的交集 II</a>
+ */
+fun intersect(nums1: IntArray, nums2: IntArray): IntArray {
+    nums1.sort()
+    nums2.sort()
+    var left = 0 // 左边数组下标
+    var right = 0 // 右边数组下标
+    val list = mutableListOf<Int>()
+    while (left < nums1.size && right < nums2.size) {
+        // 进行比较 小的下标向后移一位，相等就是交集元素
+        if (nums1[left] < nums2[right]) {
+            left++
+        } else if (nums1[left] > nums2[right]) {
+            right++
+        } else {
+            list.add(nums1[left])
+            // 相等 下标同时往后移一位
+            left++
+            right++
+        }
+    }
+    return list.toIntArray()
+}
+
+/**
+ * 加一
+ *
+ * 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。
+ * 最高位数字存放在数组的首位， 数组中每个元素只存储单个数字。
+ * 你可以假设除了整数 0 之外，这个整数不会以零开头。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/x2cv1c/">加一</a>
+ */
+fun plusOne(digits: IntArray): IntArray {
+    // 看完下面的扩展思路 回头看这个就是耻辱
+    var i = digits.size - 1
+    while (i in digits.size - 1 downTo 0) {
+        if (digits[i] + 1 == 10) {
+            digits[i] = 0
+            if (i == 0) {
+                var src = IntArray(digits.size +1)
+                System.arraycopy(src, 1, digits,0, digits.size)
+                src[0] = 1
+                return src
+            }
+            i--
+            continue
+        } else {
+            digits[i] += 1
+            i = -1 // 结束
+        }
+    }
+    return digits
+}
+
+// 扩展思路
+fun plusOne2(digits: IntArray): IntArray {
+    for (i in digits.size - 1 downTo 0) {
+        if (digits[i] != 9) {
+            digits[i] += 1
+            return digits
+        }
+        digits[i] = 0
+    }
+    val res = IntArray(digits.size + 1)
+    res[0] = 1
+    return res
+}
+
+/**
+ * 移动零
+ *
+ * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+ * 请注意，必须在不复制数组的情况下原地对数组进行操作。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/x2ba4i/">移动零</a>
+ */
+fun moveZeroes(nums: IntArray) { // [0,1,0,3,12]
+    var index = 0
+    for (i in 0 until nums.size) {
+        if (nums[i] != 0) {
+            val temp = nums[index]
+            nums[index] = nums[i]
+            nums[i] = temp
+            index++
+        }
+    }
+}
+
+/**
+ * 两数之和
+ * 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那两个整数，并返回它们的数组下标。
+ * 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+ * 你可以按任意顺序返回答案。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/x2jrse/">两数之和</a>
+ */
+fun twoSum(nums: IntArray, target: Int): IntArray {
+    val map = HashMap<Int, Int>() // 数字 to 下标
+    map[nums[0]] = 0
+    for (i in 1 until nums.size) {
+        val key = target - nums[i]
+        if (map.containsKey(key)) {
+            return intArrayOf(map[key]!!, i)
+        } else {
+            map[nums[i]] = i
+        }
+    }
+    return intArrayOf()
+}
