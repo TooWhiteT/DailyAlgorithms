@@ -226,3 +226,107 @@ fun twoSum(nums: IntArray, target: Int): IntArray {
     }
     return intArrayOf()
 }
+
+/**
+ * 有效的数独
+ *
+ * 请你判断一个9 x 9 的数独是否有效。只需要 根据以下规则 ，验证已经填入的数字是否有效即可。
+ * 数字1-9在每一行只能出现一次。
+ * 数字1-9在每一列只能出现一次。
+ * 数字1-9在每一个以粗实线分隔的3x3宫内只能出现一次。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/x2f9gg/">有效的数独</a>
+ */
+fun isValidSudoku(board: Array<CharArray>): Boolean {
+    val line = IntArray(9)
+    val column = IntArray(9)
+    val cell = IntArray(9)
+    var shift = 0
+    for (i in board.indices) {
+        for (j in board[i].indices) {
+            if (board[i][j] == '.') continue
+            shift = 1 shl (board[i][j] - '0')
+            val k = (i /3) * 3 + j / 3
+            if ((column[i] and shift) > 0
+                || (line[j] and shift) > 0
+                || (cell[k] and shift) > 0) return false
+
+            column[i] = column[i] or shift
+            line[j] = line[j] or shift
+            cell[k] = cell[k] or shift
+        }
+    }
+    return true
+}
+
+/**
+ * 旋转图像
+ *
+ * 给定一个 n×n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+ * 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnhhkv/">旋转图像</a>
+ */
+fun rotate(matrix: Array<IntArray>) { // 直接交换
+    for (i in 0 until (matrix.size / 2)) { // 不同size需要旋转的层数
+        for (j in i until (matrix.size - i - 1)) {
+            val temp = matrix[i][j]
+            val m = matrix.size - j - 1
+            val n = matrix.size - i - 1
+            matrix[i][j] = matrix[m][i]
+            matrix[m][i] = matrix[n][m]
+            matrix[n][m] = matrix[j][n]
+            matrix[j][n] = temp
+        }
+    }
+}
+
+/**
+ * 反转字符串
+ *
+ * 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出。
+ * 不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题。
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnhbqj/">反转字符串</a>
+ */
+fun reverseString(s: CharArray) {
+    if (s.size == 1) {
+        return
+    }
+    for (i in 0 until (s.size / 2)) {
+        val temp = s[i]
+        s[i] = s[s.size - 1 - i]
+        s[s.size - 1 - i] = temp
+    }
+}
+
+// 双指针法
+fun reverseString2(s: CharArray) {
+    var left = 0 // 左边指针
+    var right = s.size - 1 // 右边指针
+    while (left < right) {
+        val temp = s[left]
+        s[left] = s[right]
+        s[right] = temp
+        left++
+        right--
+    }
+}
+
+/**
+ * 整数反转
+ *
+ * 给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果。
+ * 如果反转后整数超过 32 位的有符号整数的范围[−2^31, 2^31− 1] ，就返回 0。
+ * 假设环境不允许存储 64 位整数（有符号或无符号）。
+ *
+ * @see <a href=“https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnx13t/”>整数反转</a>
+ */
+fun reverse(x: Int): Int {
+    var res: Long = 0
+    var temp = x
+    while (temp != 0) {
+        res = res * 10 + x % 10
+        temp /= 10
+    }
+    return if (res in Int.MIN_VALUE..Int.MAX_VALUE) res.toInt() else 0
+}
