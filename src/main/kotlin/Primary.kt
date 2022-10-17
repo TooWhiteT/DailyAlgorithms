@@ -1,3 +1,8 @@
+import java.util.*
+import javax.xml.stream.events.Characters
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
+
 /**
  * 删除排序数组中的重复项
  *
@@ -329,4 +334,221 @@ fun reverse(x: Int): Int {
         temp /= 10
     }
     return if (res in Int.MIN_VALUE..Int.MAX_VALUE) res.toInt() else 0
+}
+
+/**
+ * 字符串中的第一个唯一字符
+ *
+ * 给定一个字符串 s ，找到 它的第一个不重复的字符，并返回它的索引 。如果不存在，则返回 -1
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn5z8r/">字符串中的第一个唯一字符</a>
+ */
+fun firstUniqChar(s: String): Int {
+    for (i in 0 until s.length) {
+        if (s.indexOf(s[i]) == s.lastIndexOf(s[i])) {
+            return i
+        }
+    }
+    return -1
+}
+
+/**
+ * 有效的字母异位词
+ *
+ * 给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+ * 注意：若 s 和 t 中每个字符出现的次数都相同，则称 s 和 t 互为字母异位词。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn96us/">有效的字母异位词</a>
+ */
+fun isAnagram(s: String, t: String): Boolean { // 排序 比较内容  遍历s map存 遍历s减数量 都为0 返回true
+    if (s.length != t.length) {
+        return false
+    }
+    val s_arr = s.toCharArray()
+    val t_arr = t.toCharArray()
+    s_arr.sort()
+    t_arr.sort()
+    return s_arr.contentEquals(t_arr)
+}
+
+/**
+ * 验证回文串
+ *
+ * 如果在将所有大写字符转换为小写字符、并移除所有非字母数字字符之后，短语正着读和反着读都一样。则可以认为该短语是一个 回文串 。
+ * 字母和数字都属于字母数字字符。
+ * 给你一个字符串 s，如果它是 回文串 ，返回 true ；否则，返回 false 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xne8id/">验证回文串</a>
+ */
+fun isPalindrome(s: String): Boolean { // 双指针法
+    if (s.trim().isEmpty()) {
+        return true
+    }
+    val temp = s.toLowerCase()
+    var left = 0
+    var right = s.length - 1
+    while (left < right) {
+        while (left < right && !Character.isLetterOrDigit(temp[left])) {
+            left++
+        }
+        while (left < right && !Character.isLetterOrDigit(temp[right])) {
+            right--
+        }
+        if (temp[left] != temp[right]) return false
+        left++
+        right--
+    }
+    return true
+}
+
+/**
+ * 字符串转换整数 (atoi)
+ *
+ * 请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
+ *
+ * 函数 myAtoi(string s) 的算法如下：
+ *
+ * 1.读入字符串并丢弃无用的前导空格
+ *
+ * 2.检查下一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。 确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。
+ *
+ * 3.读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。
+ *
+ * 4.将前面步骤读入的这些数字转换为整数（即，"123" -> 123， "0032" -> 32）。如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。
+ *
+ * 5.如果整数数超过 32 位有符号整数范围 [−2^31, 2^31− 1] ，需要截断这个整数，使其保持在这个范围内。具体来说，小于 −2^31 的整数应该被固定为 −2^31 ，大于 2^31− 1 的整数应该被固定为 2^31− 1 。
+ *
+ * 6.返回整数作为最终结果。
+ *
+ * 注意：
+ * 本题中的空白字符只包括空格字符 ' ' 。
+ * 除前导空格或数字后的其余字符串外，请勿忽略 任何其他字符。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnoilh/">字符串转换整数 (atoi)</a>
+ */
+fun myAtoi(s: String): Int {
+    // 去掉空格
+    val temp = s.trim()
+    // 如果为空，直接返回0
+    if (temp.length == 0)
+        return 0;
+    var index = 0 // 遍历字符串中字符的位置
+    var res = 0 // 最终结果
+    var sign = 1 // 符号，1是正数，-1是负数，默认为正数
+    var length = temp.length
+    // 判断符号
+    if (temp[index] == '-' || temp[index] == '+') {
+        sign = if (temp[index++] == '-')  -1 else 1
+    }
+    for (i in index until length) {
+        // 取出字符串中字符，然后转化为数字
+        val digit = temp[i] - '0'
+        // 按照题中的要求，读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。
+        // 字符串的其余部分将被忽略。如果读取了非数字，后面的都要忽略
+        if (digit < 0 || digit > 9) {
+            break
+        }
+        // 越界处理
+        if (res > Int.MAX_VALUE / 10 || (res == Int.MAX_VALUE / 10 && digit > Int.MAX_VALUE % 10)) {
+            return if (sign == 1) Int.MAX_VALUE else Int.MIN_VALUE
+        } else {
+            res = res * 10 + digit
+        }
+    }
+    return sign * res // 进行正负赋值
+}
+
+/**
+ * 实现 strStr()
+ *
+ * 给你两个字符串haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果needle 不是 haystack 的一部分，则返回 -1 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnr003/">实现 strStr()</a>
+ */
+fun strStr(haystack: String, needle: String): Int {
+    if (needle.length == 0) {
+        return 0
+    }
+    var left = 0
+    var right = 0
+    while (left < haystack.length && right < needle.length) {
+        if (haystack[left] == needle[right]) {
+            left++
+            right++
+        } else {
+            // 如果不匹配，就回退，从第一次匹配的下一个开始，
+            left = left - right + 1
+            right = 0
+        }
+        if (right == needle.length) {
+            return left - right
+        }
+    }
+    return -1
+}
+
+private fun getNext(p: String, next: IntArray) {
+    val len = p.length
+    var i = 0
+    var j = -1
+    next[0] = -1 // 这个默认的，
+    /**
+     * 匹配的时候是当前字符的前一个和前面的匹配，所以最后一个是不参与匹配的，可以看strStr方法的注释，
+     */
+    while (i < len - 1) {
+        if (j == -1 || p[i] == p[j]) {
+            /**
+             * 如果j不等于-1，指定的字符相等，那么i和j要往后移一位，这点很好理解，如果j为-1的时候，i往后移移位，j置为0
+             * 重新开始匹配。next[i]是匹配成功的数量
+             */
+            i++
+            j++
+            next[i] = j
+        } else {
+            /**
+             * 关键是这里不好理解，为什么匹配失败要让next[j]等于j，要记住这里的next[j]是指匹配成功的数量，有可能为0，也有可能是其他数.比如
+             * 字符串ABCABXYABCABATDM,对应的next数组为{-1	0	0	0	1	2	0	0	1	2	3	4	5	1	0	0	}
+             */
+            j = next[j]
+        }
+    }
+}
+
+fun strStrKMP(haystack: String, needle: String): Int {
+    if (needle.length == 0) return 0
+    var i = 0
+    var j = 0
+    /**
+     * 数组next表示pattern指定的下标前具有相同的字符串数量，语言组织能力不好，可能不是太好理解，我举个例子吧
+     * ，比如ABCABA，数组next[0]是-1，这个是固定的，因为第一个A前面是没有字符的，next[1]是0，因为B的前面就一个A，没有
+     * 重复的，所以是0,同理next[2]也是,next[3]也是0,而next[4]是1，因为next[4]所指向的是第二个B，第二个B前面有一个A和
+     * 第一个A相同，所以是1,next[5]是2，因为next[5]所指向的是最后一个Ａ，因为前面的Ａ对比成功，并且Ｂ也对比成功，所以是２，
+     * 也就是ＡＢ两个字符串匹配成功,再举个例子，比如WABCABA，数组除了第一个为-1，其他的都是为0，因为只有第一个匹配成功之后
+     * 才能匹配后面的，虽然后面的AB和前面的AB匹配成功，但是后面AB的前面是C和前面AB的前面一个W不匹配，所以后面的匹配都是0.
+     * 要记住只有指定字符前面的字符和第一个字符匹配成功的时候才能往后匹配，否则后面的永远都是先和第一个匹配。
+     */
+    val next = IntArray(needle.length)
+    getNext(needle, next)
+    while (i < haystack.length && j < needle.length) {
+        if (j == -1 || haystack[i] == needle[j]) {
+            /**
+             * 这里j等于-1的时候也只有在下面next数组赋值的时候才会出现，并且只有在数组next[0]的时候才会等于-1，
+            其他时候是没有的，这一点要谨记，待会下面求next数组的时候就会用到。这里可以这样来理解，如果j不等于-1，
+            并且下标i和j所指向的字符相等，那么i和j分别往后移一位继续比较，这个很好理解，那么如果j==-1的时候，就表示
+            就表示前面没有匹配成功的，同时i往后移一位，j置为0（j==-1的时候，j++为0），再从0开始比较。
+             */
+            i++
+            j++
+        } else {
+            /**
+             * i = i - j + 1;
+            j = 0;
+            返回到指定的位置，不是返回到匹配失败的下一个位置，这里都好理解，重点是求数组next。
+            这里只要j等于0，在next[j]赋值的之后，j就会等于-1；因为next[0]等于-1
+             */
+            j = next[j] // j回到指定位置
+        }
+        if (j == needle.length) return i - j
+    }
+    return -1
 }
