@@ -1,3 +1,4 @@
+import java.lang.StringBuilder
 import java.util.*
 import javax.xml.stream.events.Characters
 import kotlin.collections.HashMap
@@ -551,4 +552,148 @@ fun strStrKMP(haystack: String, needle: String): Int {
         if (j == needle.length) return i - j
     }
     return -1
+}
+
+/**
+ * 外观数列
+ *
+ * 给定一个正整数 n ，输出外观数列的第 n 项。
+ *「外观数列」是一个整数序列，从数字 1 开始，序列中的每一项都是对前一项的描述。
+ * 你可以将其视作是由递归公式定义的数字字符串序列：
+ *  countAndSay(1) = "1"
+ *  countAndSay(n) 是对 countAndSay(n-1) 的描述，然后转换成另一个数字字符串。
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnpvdm/">外观数列</a>
+ */
+fun countAndSay(n: Int): String {
+    if (n == 1) return "1"
+    val temp = countAndSay(n - 1)
+    val res = StringBuilder()
+    var local = temp[0]
+    var count = 0
+    for (i in temp) {
+        if (i == local) {
+            count++
+        } else {
+            res.append(count)
+            res.append(local)
+            count = 1
+            local = i
+        }
+    }
+    res.append(count)
+    res.append(local)
+    return res.toString()
+}
+
+/**
+ * 最长公共前缀
+ *
+ * 编写一个函数来查找字符串数组中的最长公共前缀。
+ * 如果不存在公共前缀，返回空字符串 ""。
+ *
+ * @see <a href="">最长公共前缀</a>
+ */
+fun longestCommonPrefix(strs: Array<String>): String {
+    var pre = strs[0]
+    for (i in 1 until strs.size) {
+        while (strs[i].indexOf(pre) != 0) {
+            pre = pre.substring(0, pre.length - 1)
+        }
+    }
+    return pre
+}
+
+class ListNode(var `val`: Int) {
+    var next: ListNode? = null
+}
+
+/**
+ * 删除链表中的节点
+ *
+ * 有一个单链表的 head，我们想删除它其中的一个节点node。
+ * 给你一个需要删除的节点node。你将无法访问第一个节点head。
+ * 链表的所有值都是 唯一的，并且保证给定的节点node不是链表中的最后一个节点。
+ * 删除给定的节点。注意，删除节点并不是指从内存中删除它。这里的意思是：
+ *
+ * 给定节点的值不应该存在于链表中。
+ *
+ * 链表中的节点数应该减少 1。
+ *
+ * node前面的所有值顺序相同。
+ *
+ * node后面的所有值顺序相同。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnarn7/">删除链表中的节点</a>
+ */
+fun deleteNode(node: ListNode?) {
+    // 删除节点 将它指向的下一个节点替换掉它  影子弑主
+    node?.`val` = node?.next?.`val`!!
+    node.next = node.next?.next
+}
+
+/**
+ * 删除链表的倒数第N个节点
+ *
+ * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn2925/">删除链表的倒数第N个节点</a>
+ */
+fun removeNthFromEnd(head: ListNode?, n: Int): ListNode? {
+    var pre = head
+    val last = length(head) - n
+    // 如果last等于0表示删除的是头结点
+    if (last == 0) return head?.next
+    // 这里首先要找到要删除链表的前一个结点
+    for (i in 0 until (last - 1)) {
+        pre = pre?.next
+    }
+    // 然后让前一个结点的 next 指向要删除节点的 next
+    pre?.next = pre?.next?.next
+    return head
+}
+// 获取链表长度
+fun length(head: ListNode?): Int {
+    var temp = head
+    var len = 0
+    while (temp != null) {
+        len++
+        temp = temp.next
+    }
+    return len
+}
+
+/**
+ * 反转链表
+ * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnnhm6/">反转链表</a>
+ */
+fun reverseList(head: ListNode?): ListNode? { // 栈 先进后出特性
+    val stack = Stack<ListNode>()
+    var temp = head
+    while (temp != null) {
+        stack.push(temp)
+        temp = temp.next
+    }
+    if (stack.isEmpty()) return null
+    var node = stack.pop()
+    val dump = node
+    while (!stack.isEmpty()) {
+        val pop = stack.pop()
+        node.next = pop
+        node = node.next
+    }
+    node.next = null
+    return dump
+}
+
+// 递归法
+fun reverseList2(head: ListNode?): ListNode? {
+    if (head?.next == null) {
+        return head
+    }
+    val newHead = reverseList2(head.next)
+    head.next?.next = head
+    head.next = null
+    return newHead
 }
