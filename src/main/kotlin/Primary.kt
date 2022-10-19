@@ -603,7 +603,7 @@ fun longestCommonPrefix(strs: Array<String>): String {
     return pre
 }
 
-class ListNode(var `val`: Int) {
+class ListNode(var `val`: Int) { // 链表
     var next: ListNode? = null
 }
 
@@ -696,4 +696,181 @@ fun reverseList2(head: ListNode?): ListNode? {
     head.next?.next = head
     head.next = null
     return newHead
+}
+
+/**
+ * 合并两个有序链表
+ *
+ * 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnnbp2/">合并两个有序链表</a>
+ */
+fun mergeTwoLists(list1: ListNode?, list2: ListNode?): ListNode? { // 双指针法
+    var l1 = list1
+    var l2 = list2
+    val head = ListNode(0)
+    var temp = head
+    // 比较一下哪个小就把哪个链表的头拿出来放到新的链表中，一直这样循环
+    while (l1 != null && l2 != null) {
+        if (l1.`val` <= l2.`val`) {
+            temp.next = ListNode(l1.`val`)
+            l1 = l1.next
+        } else {
+            temp.next = ListNode(l2.`val`)
+            l2 = l2.next
+        }
+        // 向后移
+        temp = temp.next!!
+    }
+    // 最后将不为空的加后面即可
+    if (l1 == null) {
+        temp.next = l2
+    } else {
+        temp.next = l1
+    }
+    return head.next
+}
+
+fun mergeTwoLists2(list1: ListNode?, list2: ListNode?): ListNode? {
+    val newList = ListNode(-1)
+    var dummy: ListNode? = newList
+    var tempList1 = list1
+    var tempList2 = list2
+    while (tempList1 != null || tempList2 != null) {
+        if (tempList1 == null) {
+            dummy?.next = tempList2
+            break
+        } else if (tempList2 == null) {
+            dummy?.next = tempList1
+            break
+        } else if (tempList1.`val` < tempList2.`val`) {
+            dummy?.next = tempList1
+            dummy = dummy?.next
+            tempList1 = tempList1.next
+        } else {
+            dummy?.next = tempList2
+            dummy = dummy?.next
+            tempList2 = tempList2.next
+        }
+    }
+    return newList.next
+}
+
+/**
+ * 回文链表
+ *
+ * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnv1oc/">回文链表</a>
+ */
+fun isPalindrome(head: ListNode?): Boolean { // 栈方法
+    if (head == null) return true
+    var temp = head
+    var temp_stack = head
+    val stack = Stack<Int>()
+    var length = 0
+    // 入栈
+    while (temp_stack != null) {
+        stack.push(temp_stack.`val`)
+        temp_stack = temp_stack.next
+        length++
+    }
+    // 长度 除 2  只要对比一半
+    length = length ushr 1
+    while (length >= 0) {
+        // 出栈 后半段 与 前半段进行比较
+        if (temp?.`val` != stack.pop()) return false
+        temp = temp?.next
+        length--
+    }
+    return true
+}
+
+fun isPalindrome2(head: ListNode?): Boolean { // 快慢指针
+    var fast = head // 快指针
+    var slow = head // 慢指针
+    while (fast?.next != null) {
+        fast = fast?.next?.next
+        slow = slow?.next
+    }
+    // 如果fast不为空，说明链表的长度是奇数个
+    if (fast != null) {
+        slow = slow?.next
+    }
+    slow = reverse(slow)
+    fast = head
+    while (slow != null) {
+        // 然后比较，判断节点值是否相等
+        if (fast?.`val` != slow.`val`) return false
+        slow = slow.next
+        fast = fast.next
+    }
+    return true
+}
+
+fun reverse(head: ListNode?): ListNode? {
+    var perv: ListNode? = null
+    var temp = head
+    while (temp != null) {
+        val next = temp.next
+        temp.next = perv
+        perv = temp
+        temp = next
+    }
+    return perv
+}
+
+/**
+ * 环形链表
+ *
+ * 给你一个链表的头节点 head ，判断链表中是否有环。
+ * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递。仅仅是为了标识链表的实际情况。
+ * 如果链表中存在环，则返回 true 。 否则，返回 false 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnwzei/">环形链表</a>
+ */
+fun hasCycle(head: ListNode?): Boolean { // 快慢指针
+    // 假如有环，那么快慢指针最终都会走到环上 相遇
+    if (head == null) return false
+    var slow = head // 慢
+    var fast = head // 快
+    while (fast?.next != null) {
+        slow = slow?.next // 慢 走一步
+        fast = fast?.next?.next // 快 走两步
+        // 如果相遇，说明有环，直接返回true
+        if (fast == slow) return true
+    }
+    return false
+}
+
+fun hasCycle2(head: ListNode?): Boolean { // Set 集合特性 判断是否重复
+    val set = HashSet<ListNode>()
+    var temp = head
+    while (temp != null) {
+        if (set.contains(temp)) return true
+        set.add(temp)
+        temp = temp.next
+    }
+    return false
+}
+
+class TreeNode(var `val`: Int) { // 树
+    var left: TreeNode? = null
+    var right: TreeNode? = null
+}
+
+/**
+ * 二叉树的最大深度
+ *
+ * 给定一个二叉树，找出其最大深度。
+ * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+ * 说明: 叶子节点是指没有子节点的节点。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnd69e/">二叉树的最大深度</a>
+ */
+fun maxDepth(root: TreeNode?): Int { // 递归
+    if (root == null) return 0
+    val left = maxDepth(root.left)
+    val right = maxDepth(root.right)
+    return 1 + (if (right >= left) right else left)
 }
