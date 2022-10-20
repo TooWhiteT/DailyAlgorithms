@@ -1,8 +1,5 @@
-import java.lang.StringBuilder
 import java.util.*
-import javax.xml.stream.events.Characters
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
+import kotlin.collections.ArrayList
 
 /**
  * 删除排序数组中的重复项
@@ -873,4 +870,144 @@ fun maxDepth(root: TreeNode?): Int { // 递归
     val left = maxDepth(root.left)
     val right = maxDepth(root.right)
     return 1 + (if (right >= left) right else left)
+}
+
+/**
+ * 验证二叉搜索树
+ *
+ * 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+ * 有效 二叉搜索树定义如下：
+ *
+ * 1.节点的左子树只包含 小于 当前节点的数。
+ *
+ * 2.节点的右子树只包含 大于 当前节点的数。
+ *
+ * 3.所有左子树和右子树自身必须也是二叉搜索树。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn08xg/">验证二叉搜索树</a>
+ */
+// 前一个结点，全局的
+var prev: TreeNode? = null
+fun isValidBST(root: TreeNode?): Boolean {
+    if (root == null) return true
+    // 访问左子树
+    if (!isValidBST(root.left)) return false
+    // 左树满足条件 判断右树
+    // 访问当前节点：如果当前节点小于等于中序遍历的前一个节点直接返回false。
+    if (prev != null && prev?.`val`!! >= root.`val`) return false
+    prev = root
+    // 访问右子树
+    if (!isValidBST(root.right)) return false
+    return true
+}
+
+/**
+ * 对称二叉树
+ *
+ * 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn7ihv/">对称二叉树</a>
+ */
+fun isSymmetric(root: TreeNode?): Boolean { // 递归
+    if (root == null) return true
+    // 从两个子节点开始判断
+    return isSymmetricHelper(root.left, root.right)
+}
+
+fun isSymmetricHelper(left: TreeNode?, right: TreeNode?): Boolean {
+    // 如果左右子节点都为空，说明当前节点是叶子节点，返回true
+    if (left == null && right == null) return true
+    // 如果当前节点只有一个子节点或者有两个子节点，但两个子节点的值不相同，直接返回false
+    if (left == null || right == null || right.`val` != left.`val`) return false
+    // 然后左子节点的左子节点和右子节点的右子节点比较，左子节点的右子节点和右子节点的左子节点比较
+    return isSymmetricHelper(left.left, right.right) && isSymmetricHelper(left.right, right.left)
+}
+
+fun isSymmetric2(root: TreeNode?): Boolean { // 迭代
+    val queue = LinkedList<TreeNode?>()
+    // 将子树放入队列
+    queue.offer(root?.left)
+    queue.offer(root?.right)
+    while (!queue.isEmpty()) {
+        // 一次取两个 注意与上下文 offer的顺序
+        val left = queue.poll()
+        val right = queue.poll()
+
+        if (left == null && right == null) continue
+        // 如果左子树和右子树一个为空一个不为空，直接返回false
+        if (left == null || right == null) return false
+        // 左子树和右子树 值不同返回false
+        if (left.`val` != right.`val`) return false
+
+        // 把子节点加入到队列中，注意加入的顺序
+
+        // 外翼
+        queue.offer(left.left)
+        queue.offer(right.right)
+        // 内翼
+        queue.offer(left.right)
+        queue.offer(right.left)
+    }
+    return true
+}
+
+/**
+ * 二叉树的层序遍历
+ *
+ * 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnldjj/">二叉树的层序遍历</a>
+ */
+fun levelOrder(root: TreeNode?): List<List<Int>> { // BFS 广度搜索
+    if (root == null) return listOf()
+    val queue = LinkedList<TreeNode?>()
+    val res = ArrayList<ArrayList<Int>>()
+    // 根节点加入队列
+    queue.add(root)
+    // 遍历队列中的节点
+    while (!queue.isEmpty()) {
+        // 表示的是每层的结点数
+        val level = queue.size
+        // 每层的结点值
+        val subList = ArrayList<Int>()
+        for (i in 0 until level) {
+            // 出列
+            val node = queue.poll()
+            subList.add(node?.`val`!!)
+            // 左右子节点如果不为空就加入到队列中
+            if (node.left != null) {
+                queue.add(node.left)
+            }
+            if (node.right != null) {
+                queue.add(node.right)
+            }
+        }
+        // 把每层的结点值存储在res中
+        res.add(subList)
+    }
+    return res
+}
+
+/**
+ * 将有序数组转换为二叉搜索树
+ *
+ * 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 高度平衡 二叉搜索树。
+ *
+ * 高度平衡 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过 1 」的二叉树。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xninbt/">将有序数组转换为二叉搜索树</a>
+ */
+fun sortedArrayToBST(nums: IntArray): TreeNode? {
+    if (nums.size == 0) return null
+    return sortedArrayToBST(nums, 0, nums.size - 1)
+}
+
+// 使用递归的方式，每次取数组中间的值比如m作为当前节点，m前面的值作为他左子树的结点值，m后面的值作为他右子树的节点值
+fun sortedArrayToBST(nums: IntArray, start: Int, end: Int): TreeNode? {
+    if (start > end) return null
+    val mid = (start + end) ushr 1
+    val node = TreeNode(nums[mid])
+    node.left = sortedArrayToBST(nums, start, mid - 1)
+    node.right = sortedArrayToBST(nums, mid + 1, end)
+    return node
 }
