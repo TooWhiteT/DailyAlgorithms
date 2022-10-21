@@ -1011,3 +1011,127 @@ fun sortedArrayToBST(nums: IntArray, start: Int, end: Int): TreeNode? {
     node.right = sortedArrayToBST(nums, mid + 1, end)
     return node
 }
+
+/**
+ * 合并两个有序数组
+ *
+ * 给你两个按 非递减顺序 排列的整数数组 nums1 和 nums2，另有两个整数 m 和 n ，分别表示 nums1 和 nums2 中的元素数目。
+ * 请你 合并 nums2 到 nums1 中，使合并后的数组同样按 非递减顺序 排列。
+ * 注意：最终，合并后数组不应由函数返回，而是存储在数组 nums1 中。为了应对这种情况，nums1 的初始长度为 m + n，其中前 m 个元素表示应合并的元素，后 n 个元素为 0 ，应忽略。nums2 的长度为 n 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnumcr/">合并两个有序数组</a>
+ */
+fun merge(nums1: IntArray, m: Int, nums2: IntArray, n: Int) { // 归并排序
+    val temp = IntArray(m + n)
+    var temp_index = 0
+    var left = 0
+    var right = 0
+
+    while (left < m && right < n) {
+        if (nums1[left] <= nums2[right]) {
+            temp[temp_index++] = nums1[left++]
+        } else {
+            temp[temp_index++] = nums2[right++]
+        }
+    }
+    for (left in left until m) {
+        temp[temp_index++] = nums1[left]
+    }
+    for (right in right until n) {
+        temp[temp_index++] = nums2[right]
+    }
+    for (i in 0 until temp.size) {
+        nums1[i] = temp[i]
+    }
+}
+
+fun merge2(nums1: IntArray, m: Int, nums2: IntArray, n: Int) {
+    // m = [1,2,3,0,0,0]
+    // n = [2,5,6]
+    var left = m - 1
+    var right = n - 1
+    var end = m + n - 1
+    while (right >= 0) {
+        // 从大往小开始 归并
+        nums1[end--] = if (left >= 0 && nums1[left] > nums2[right]) nums1[left--] else nums2[right--]
+    }
+}
+
+/**
+ * 第一个错误的版本
+ *
+ * 你是产品经理，目前正在带领一个团队开发新的产品。不幸的是，你的产品的最新版本没有通过质量检测。由于每个版本都是基于之前的版本开发的，所以错误的版本之后的所有版本都是错的。
+ * 假设你有 n 个版本 [1, 2, ..., n]，你想找出导致之后所有版本出错的第一个错误的版本。
+ * 你可以通过调用bool isBadVersion(version)接口来判断版本号 version 是否在单元测试中出错。实现一个函数来查找第一个错误的版本。你应该尽量减少对调用 API 的次数。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnto1s/">第一个错误的版本</a>
+ */
+fun isBadVersion(version: Int) : Boolean { // 过编译 无实际意义
+    return false
+}
+fun firstBadVersion(n: Int): Int { // 这题玩尬的
+    var start = 0
+    var end = n
+    while (start < end) {
+        val mid = start + (end - start) / 2
+        if (!isBadVersion(mid)) {
+            start = mid + 1
+        } else {
+            end = mid
+        }
+    }
+    return start
+}
+
+/**
+ * 爬楼梯
+ *
+ * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+ * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn854d/">爬楼梯</a>
+ */
+fun climbStairs(n: Int): Int { // 找规律
+    if (n <= 1) return 1
+    val dp = IntArray(n + 1)
+    dp[1] = 1
+    dp[2] = 2
+    for (i in 3 .. n) {
+        dp[i] = dp[i-1] + dp[i-2]
+    }
+    return dp[n]
+}
+
+fun climbStairs2(n: Int): Int {
+    if (n <= 2) return n
+    var first = 1
+    var second = 2
+    var sum = 0
+    for (i in n downTo 3) {
+        sum = first + second
+        first = second
+        second = sum
+    }
+    return sum
+}
+
+/**
+ * 买卖股票的最佳时机
+ *
+ * 给定一个数组 prices ，它的第 i 个元素prices`[i]` 表示一支给定股票第 i 天的价格。
+ * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+ * 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn8fsh/">买卖股票的最佳时机</a>
+ */
+fun maxProfit2(prices: IntArray): Int {
+    if (prices.size == 0) return 0
+    var maxProfit = 0 // 记录最大利润
+    var min = prices[0] // 记录最小值
+    for (i in 1 until prices.size) {
+        min = Math.min(min, prices[i])
+        maxProfit = Math.max(maxProfit, prices[i] - min)
+    }
+    return maxProfit
+}
+
