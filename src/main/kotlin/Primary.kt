@@ -1135,3 +1135,129 @@ fun maxProfit2(prices: IntArray): Int {
     return maxProfit
 }
 
+/**
+ * 最大子序和
+ *
+ * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+ * 子数组 是数组中的一个连续部分。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn3cg3/">最大子序和</a>
+ */
+fun maxSubArray(nums: IntArray): Int {
+    var cur = nums[0]
+    var max = cur
+    for (i in 1 until nums.size) {
+        cur = Math.max(cur, 0) + nums[i]
+        max = Math.max(cur, max)
+    }
+    return max
+}
+
+/**
+ * 打家劫舍
+ *
+ * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+ * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnq4km/">打家劫舍</a>
+ */
+fun rob(nums: IntArray): Int {
+    if (nums.size == 0) return 0
+    var dp0 = 0 // 第1家没偷
+    var dp1 = nums[0] // 第1家偷了
+
+    for (i in 1 until nums.size) {
+        // 防止dp0被修改之后对下面运算造成影响，这里
+        // 使用一个临时变量temp先把结果存起来，计算完
+        // 之后再赋值给dp0.
+        val temp = Math.max(dp0, dp1)
+        dp1 = dp0 + nums[i]
+        dp0 = temp
+    }
+    // 最后取最大值即可
+    return Math.max(dp0, dp1)
+}
+
+/**
+ * 打乱数组
+ *
+ * 给你一个整数数组 nums ，设计算法来打乱一个没有重复元素的数组。打乱后，数组的所有排列应该是 等可能 的。
+ * 实现 Solution class:
+ *
+ * 1. Solution(int[] nums) 使用整数数组 nums 初始化对象
+ * 2. int[] reset() 重设数组到它的初始状态并返回
+ * 3. int[] shuffle() 返回数组随机打乱后的结果
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn6gq1/">打乱数组</a>
+ */
+class Solution(val nums: IntArray) {
+    val temp = nums
+    fun reset(): IntArray {
+        return temp
+    }
+
+    fun shuffle(): IntArray {
+        val clone = nums.clone()
+        for (i in 0 until nums.size) {
+            val j = Random().nextInt(i + 1)
+            if (i != j) {
+                clone[i] = clone[i] xor clone[j]
+                clone[j] = clone[j] xor clone[i]
+                clone[i] = clone[i] xor clone[j]
+            }
+        }
+        return clone
+    }
+}
+
+/**
+ * 最小栈
+ * 设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
+ *
+ * 实现 MinStack 类:
+ *
+ * MinStack() 初始化堆栈对象。
+ *
+ * void push(int val) 将元素val推入堆栈。
+ *
+ * void pop() 删除堆栈顶部的元素。
+ *
+ * int top() 获取堆栈顶部的元素。
+ *
+ * int getMin() 获取堆栈中的最小元素。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnkq37/"></a>
+ */
+
+data class StackNode(val `val`: Int, val min: Int)
+class MinStack() {
+    val stack = Stack<StackNode>()
+    fun push(`val`: Int) {
+        if (stack.isEmpty()) {
+            stack.push(StackNode(`val`, `val`))
+        } else {
+            stack.push(StackNode(`val`, Math.min(`val`, getMin())))
+        }
+    }
+
+    fun pop() {
+        if (stack.isEmpty()) {
+            throw IllegalStateException("栈为空")
+        }
+        stack.pop()
+    }
+
+    fun top(): Int {
+        if (stack.isEmpty()) {
+            throw IllegalStateException("栈为空")
+        }
+        return stack.peek().`val`
+    }
+
+    fun getMin(): Int {
+        if (stack.isEmpty()) {
+            throw IllegalStateException("栈为空")
+        }
+        return stack.peek().min
+    }
+}
