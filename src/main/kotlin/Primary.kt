@@ -1403,3 +1403,104 @@ fun romanToInt(s: String): Int {
     }
     return res
 }
+
+/**
+ * 位1的个数
+ *
+ * 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为汉明重量）。
+ *
+ * 提示：
+ * 请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，并且不应影响您的实现，因为无论整数是有符号的还是无符号的，其内部的二进制表示形式都是相同的。
+ * 在 Java 中，编译器使用二进制补码记法来表示有符号整数。因此，在上面的 示例 3 中，输入表示有符号整数 -3。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xn1m0i/">位1的个数</a>
+ */
+fun hammingWeight(n: Int): Int {
+    var temp = n
+    var count = 0
+    while (temp != 0) {
+        temp = temp and (temp - 1)
+        count++
+    }
+    return count
+}
+
+/**
+ * 汉明距离
+ *
+ * 两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+ * 给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnyode/">汉明距离</a>
+ */
+fun hammingDistance(x: Int, y: Int): Int {
+    var temp_xor = x xor y
+    var res = 0
+    while (temp_xor != 0) {
+        res += temp_xor and 1
+        temp_xor = temp_xor ushr 1
+    }
+    return res
+}
+
+/**
+ * 颠倒二进制位
+ *
+ * 颠倒给定的 32 位无符号整数的二进制位。
+ *
+ * 提示：
+ * 请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，并且不应影响您的实现，因为无论整数是有符号的还是无符号的，其内部的二进制表示形式都是相同的。
+ * 在 Java 中，编译器使用二进制补码记法来表示有符号整数。因此，在 示例 2中，输入表示有符号整数 -3，输出表示有符号整数 -1073741825。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnc5vg/">颠倒二进制位</a>
+ */
+fun reverseBits(n: Int): Int {
+    var temp = n
+    var res = 0
+    for (i in 0 until 32) {
+        res = res shl 1
+        res = res or (temp and 1)
+        temp = temp shr 1
+    }
+    return res
+}
+
+/**
+ * 杨辉三角
+ *
+ * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+ * 在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xncfnv/">杨辉三角</a>
+ */
+fun generate(numRows: Int): List<List<Int>> {
+    val res = ArrayList<ArrayList<Int>>()
+    val row = ArrayList<Int>()
+    for (i in 0 until numRows) {
+        row.add(0, 1)
+        for (j in 1 until (row.size - 1)) {
+            row.set(j, row[j] + row[j + 1])
+        }
+        res.add(ArrayList(row))
+    }
+    return res
+}
+
+/**
+ * 有效的括号
+ *
+ * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+ *
+ * 有效字符串需满足：
+ *
+ * 左括号必须用相同类型的右括号闭合。
+ *
+ * 左括号必须以正确的顺序闭合。
+ *
+ * 每个右括号都有一个对应的相同类型的左括号。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnbcaj/"></a>
+ */
+fun isValid(s: String): Boolean {
+    return false
+}
