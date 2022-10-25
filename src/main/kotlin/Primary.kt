@@ -1,7 +1,8 @@
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.MutableMap as MutableMap
+
+// 力扣 初级算法
 
 /**
  * 删除排序数组中的重复项
@@ -1502,5 +1503,33 @@ fun generate(numRows: Int): List<List<Int>> {
  * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnbcaj/"></a>
  */
 fun isValid(s: String): Boolean {
-    return false
+    val stack = Stack<Char>()
+    val chars = s.toCharArray()
+    for (i in chars) {
+        if (i == '(') {
+            stack.push(')')
+        } else if (i == '{') {
+            stack.push('}')
+        } else if (i == '[') {
+            stack.push(']')
+        } else if (stack.isEmpty() || stack.pop() != i) {
+            return false
+        }
+    }
+    return stack.isEmpty()
+}
+
+/**
+ * 缺失数字
+ *
+ * 给定一个包含 [0, n] 中 n 个数的数组 nums ，找出 [0, n] 这个范围内没有出现在数组中的那个数。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/top-interview-questions-easy/xnj4mt/">缺失数字</a>
+ */
+fun missingNumber(nums: IntArray): Int { // 等差数列
+    var sum = (0 + nums.size) * (1 + nums.size) / 2
+    for (i in nums) {
+        sum -= i
+    }
+    return sum
 }
