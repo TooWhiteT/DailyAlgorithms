@@ -189,3 +189,283 @@ fun twoSum(numbers: IntArray, target: Int): IntArray {
     }
     return res
 }
+
+/**
+ * 移除元素
+ *
+ * 给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于val的元素，并返回移除后数组的新长度。
+ * 不要使用额外的数组空间，你必须仅使用 O(1) 额外空间并 原地 修改输入数组。
+ * 元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/cwuyj/">移除元素</a>
+ */
+fun removeElement(nums: IntArray, `val`: Int): Int { // 快慢指针
+    var slow = 0
+    for (fast in 0 until nums.size) {
+        if (nums[fast] == `val`) {
+            continue
+        } else {
+            nums[slow++] = nums[fast]
+        }
+    }
+    return slow
+}
+
+/**
+ * 最大连续1的个数
+ *
+ * 给定一个二进制数组 nums ， 计算其中最大连续 1 的个数。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/cd71t/">最大连续1的个数</a>
+ */
+fun findMaxConsecutiveOnes(nums: IntArray): Int { // 秀一波 双指针 但没必要
+    var left = 0
+    var right = nums.size - 1
+    var left_sum = 0
+    var right_sum = 0
+    var max = 0
+    while (left < nums.size) {
+        if (nums[left] == 1) {
+            left_sum += 1
+        } else {
+            left_sum = 0
+        }
+
+        if (nums[right] == 1) {
+            right_sum += 1
+        } else {
+            right_sum = 0
+        }
+        max = Math.max(max, Math.max(left_sum, right_sum))
+        left++
+        right--
+    }
+    return max
+}
+
+fun findMaxConsecutiveOnes2(nums: IntArray): Int { // 贪心算法
+    var max = 0
+    var temp = 0
+    for (i in nums) {
+        if (i == 1) {
+            temp += 1
+        } else {
+            temp = 0
+        }
+        max = Math.max(max, temp)
+    }
+    return max
+}
+
+/**
+ * 长度最小的子数组
+ *
+ * 给定一个含有n个正整数的数组和一个正整数 target 。
+ * 找出该数组中满足其和 ≥ target 的长度最小的 连续子数组[numsl, numsl+1, ..., numsr-1, numsr] ，并返回其长度。如果不存在符合条件的子数组，返回 0 。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/c0w4r/">长度最小的子数组</a>
+ */
+fun minSubArrayLen(target: Int, nums: IntArray): Int {
+    // 遍历
+    var min = Int.MAX_VALUE
+    for (i in 0 until nums.size) {
+        var sum = 0
+        for (j in i until nums.size) {
+            sum += nums[j]
+            if (sum >= target) {
+                min = Math.min(min, j - i + 1)
+                break
+            }
+        }
+    }
+    return if (min == Int.MAX_VALUE) 0 else min
+}
+
+fun minSubArrayLen2(target: Int, nums: IntArray): Int { // 滑动窗口
+    var min = Int.MAX_VALUE
+    var left = 0
+    var right = 0
+    var sum = 0
+    while (right < nums.size) {
+        sum += nums[right]
+        while (sum >= target) {
+            min = Math.min(min, right - left + 1)
+            sum -= nums[left]
+            left++
+        }
+        right++
+    }
+    return if (min == Int.MAX_VALUE) 0 else min
+}
+
+/**
+ * 杨辉三角
+ *
+ * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+ * 在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/cuj3m/">杨辉三角</a>
+ */
+fun generate(numRows: Int): List<List<Int>> {
+    val res = ArrayList<ArrayList<Int>>()
+    val row = ArrayList<Int>()
+    for (i in 0 until numRows) {
+        row.add(0, 1)
+        for (j in 1 until (row.size - 1)) {
+            row.set(j, row[j] + row[j + 1])
+        }
+        res.add(ArrayList(row))
+    }
+    return res
+}
+
+/**
+ * 杨辉三角 II
+ *
+ * 给定一个非负索引 rowIndex，返回「杨辉三角」的第 rowIndex 行。
+ * 在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/ctyt1/">杨辉三角 II</a>
+ */
+fun getRow(rowIndex: Int): List<Int> {
+    val array = IntArray(rowIndex + 1)
+    for (row in 0 .. rowIndex) {
+        for (i in row downTo 0) {
+            if (i == 0 || i == row) {
+                array[i] = 1
+            } else {
+                array[i] = array[i - 1] + array[i]
+            }
+        }
+    }
+    return array.map { it }
+}
+
+/**
+ * 反转字符串中的单词 III
+ *
+ * 给定一个字符串 s ，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/c8su7/">反转字符串中的单词 III</a>
+ */
+fun reverseWords3(s: String): String { // 栈
+    val list = ArrayList<Stack<Char>>()
+    var stack = Stack<Char>()
+    for (c in s.indices) {
+        if (s[c] == ' ') {
+            list.add(stack)
+            stack = Stack<Char>()
+        } else if (c == s.length - 1) {
+            stack.push(s[c])
+            list.add(stack)
+        } else {
+            stack.push(s[c])
+        }
+    }
+    var index = 0
+    val chars = CharArray(s.length)
+    for (temp in list) {
+        while (!temp.isEmpty()) {
+            chars[index++] = temp.pop()
+        }
+        if (index == s.length) {
+            break
+        }
+        chars[index++] = ' '
+    }
+    return String(chars)
+}
+
+fun reverseWords3s(s: String): String { // 局部翻转
+    val chars = s.toCharArray()
+    val len = s.length
+    var j = 0
+    for (i in 0 until len) {
+        val ch = chars[i]
+        if (ch == ' ' || i == len - 1) {
+            var m = j
+            var n = if (ch == ' ') i - 1 else i
+            while (m <= n) {
+                val temp = chars[m]
+                chars[m++] = chars[n]
+                chars[n--] = temp
+            }
+            j = i + 1
+        }
+    }
+    return String(chars)
+}
+
+/**
+ * 寻找旋转排序数组中的最小值
+ *
+ * 已知一个长度为 n 的数组，预先按照升序排列，经由 1 到 n 次 旋转 后，得到输入数组。例如，原数组 nums = [0,1,2,4,5,6,7] 在变化后可能得到：
+ *
+ * 若旋转 4 次，则可以得到 [4,5,6,7,0,1,2]
+ *
+ * 若旋转 7 次，则可以得到 [0,1,2,4,5,6,7]
+ *
+ * 注意，数组 [a[0], a[1], a[2], ..., a[n-1]] 旋转一次 的结果为数组 [a[n-1], a[0], a[1], a[2], ..., a[n-2]] 。
+ * 给你一个元素值 互不相同 的数组 nums ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的 最小元素 。
+ *
+ * 你必须设计一个时间复杂度为O(log n) 的算法解决此问题。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/c3ki5/">寻找旋转排序数组中的最小值</a>
+ */
+fun findMin(nums: IntArray): Int {
+    if (nums.size == 1) return nums[0]
+    var left = 0
+    var right = nums.size - 1
+    var mid = (left + right) shr 1
+    while (left < right) {
+        if (nums[mid] > nums[right]) {
+            left = mid + 1
+        } else if (nums[mid] < nums[right]) {
+            right = mid
+        }
+        mid = (left + right) shr 1
+    }
+    return nums[left]
+}
+
+/**
+ * 删除排序数组中的重复项
+ *
+ * 给你一个 升序排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。
+ *
+ * 由于在某些语言中不能改变数组的长度，所以必须将结果放在数组nums的第一部分。更规范地说，如果在删除重复项之后有 k 个元素，那么nums的前 k 个元素应该保存最终结果。
+ * 将最终结果插入nums的前 k 个位置后返回 k 。
+ * 不要使用额外的空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/cq376/">删除排序数组中的重复项</a>
+ */
+fun removeDuplicates(nums: IntArray): Int {
+    var left = 0
+    if (nums.size <= 1) return nums.size
+    for (right in 1 until nums.size) {
+        if (nums[right] != nums[left]) {
+            nums[++left] = nums[right]
+        }
+    }
+    return left + 1
+}
+
+/**
+ * 移动零
+ *
+ * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+ * 请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+ *
+ * @see <a href="https://leetcode.cn/leetbook/read/array-and-string/c6u02/"></a>
+ */
+fun moveZeroes(nums: IntArray): Unit {
+    var index = 0
+    for (i in 0 until nums.size) {
+        if (nums[i] != 0) {
+            val temp = nums[index]
+            nums[index] = nums[i]
+            nums[i] = temp
+            index++
+        }
+    }
+}
