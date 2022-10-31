@@ -1,4 +1,4 @@
-import java.util.Stack
+import java.util.*
 
 /**
  * 二叉树的中序遍历
@@ -39,4 +39,47 @@ fun isSameTree(p: TreeNode?, q: TreeNode?): Boolean {
     } else {
         return false
     }
+}
+
+/**
+ * 平衡二叉树
+ *
+ * 给定一个二叉树，判断它是否是高度平衡的二叉树。
+ *
+ * @see <a href="https://leetcode.cn/problems/balanced-binary-tree/">平衡二叉树</a>
+ */
+fun isBalanced(root: TreeNode?): Boolean {
+    return height(root) >= 0
+}
+
+fun height(root: TreeNode?): Int {
+    if (root == null) return 0
+    val lh = height(root.left)
+    val rh = height(root.right)
+    return if (lh >= 0 && rh >= 0 && Math.abs(lh - rh) <= 1) Math.max(lh, rh) + 1 else -1
+}
+
+/**
+ * 二叉树的最小深度
+ *
+ * 给定一个二叉树，找出其最小深度。
+ * 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+ * 说明：叶子节点是指没有子节点的节点。
+ *
+ * @see <a href="https://leetcode.cn/problems/minimum-depth-of-binary-tree/">二叉树的最小深度</a>
+ */
+fun minDepth(root: TreeNode?): Int {
+    if (root == null) {
+        return 0
+    }
+    // null节点不参与比较
+    if (root.left == null && root.right != null) {
+        return 1 + minDepth(root.right)
+    }
+    // null节点不参与比较
+    if (root.right == null && root.left != null) {
+        return 1 + minDepth(root.left)
+    }
+
+    return 1 + Math.min(minDepth(root.left), minDepth(root.right))
 }
