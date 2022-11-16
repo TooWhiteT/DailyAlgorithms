@@ -1533,3 +1533,7 @@ fun missingNumber(nums: IntArray): Int { // 等差数列
     }
     return sum
 }
+
+class Node(var `val`: Int) {
+    var children: List<Node?> = listOf()
+}
