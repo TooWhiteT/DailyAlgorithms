@@ -58,7 +58,7 @@ fun wordPattern(pattern: String, s: String): Boolean {
 /**
  * Nim 游戏
  *
- * 你和你的朋友，两个人一起玩 Nim 游戏：
+ * 你和你的朋友，两个人一起玩Nim 游戏：
  *
  * 桌子上有一堆石头.
  * 你们轮流进行自己的回合，你作为先手。

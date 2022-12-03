@@ -78,7 +78,7 @@ fun fairCandySwap(aliceSizes: IntArray, bobSizes: IntArray): IntArray {
 /**
  * 三维形体的表面积
  *
- * 给你一个 n * n 的网格 grid ，上面放置着一些 1 x 1 x 1 的正方体。每个值 v = grid[i][j] 表示 v 个正方体叠放在对应单元格 (i, j) 上。
+ * 给你一个 n * n 的网格grid ，上面放置着一些1 x 1 x 1的正方体。每个值v = grid[i][j]表示v个正方体叠放在对应单元格(i, j)上。
  * 放置好正方体后，任何直接相邻的正方体都会互相粘在一起，形成一些不规则的三维形体。
  * 请你返回最终这些形体的总表面积。
  * 注意：每个形体的底面也需要计入表面积中。
@@ -108,9 +108,9 @@ fun surfaceArea(grid: Array<IntArray>): Int {
 /**
  * 单调数列
  *
- * 如果数组是单调递增或单调递减的，那么它是 单调 的。
- * 如果对于所有 i <= j，nums[i] <= nums[j]，那么数组 nums 是单调递增的。 如果对于所有 i <= j，nums[i]> = nums[j]，那么数组 nums 是单调递减的。
- * 当给定的数组 nums 是单调数组时返回 true，否则返回 false。
+ * 如果数组是单调递增或单调递减的，那么它是单调 的。
+ * 如果对于所有 i <= j，nums[i] <= nums[j]，那么数组 nums 是单调递增的。 如果对于所有 i <= j，nums[i]> = nums[j]，那么数组 nums是单调递减的。
+ * 当给定的数组 nums是单调数组时返回 true，否则返回 false。
  *
  * @see <a href="https://leetcode.cn/problems/monotonic-array">单调数列</a>
  */
@@ -129,7 +129,7 @@ fun isMonotonic(nums: IntArray): Boolean {
 /**
  * 递增顺序搜索树
  *
- * 给你一棵二叉搜索树的 root ，请你 按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，只有一个右子节点。
+ * 给你一棵二叉搜索树的root，请你 按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，只有一个右子节点。
  *
  * @see <a href="https://leetcode.cn/problems/increasing-order-search-tree">递增顺序搜索树</a>
  */
