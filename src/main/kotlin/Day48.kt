@@ -1,3 +1,5 @@
+import java.util.*
+
 /**
  * 通过连接另一个数组的子数组得到一个数组
  *
@@ -9,7 +11,26 @@
  * @see <a href="https://leetcode.cn/problems/form-array-by-concatenating-subarrays-of-another-array">通过连接另一个数组的子数组得到一个数组</a>
  */
 fun canChoose(groups: Array<IntArray>, nums: IntArray): Boolean {
-
+    val len = nums.size
+    var index = 0
+    for (arr in groups) {
+        val arrLen = arr.size
+        var isMatch = false
+        while (index + arrLen <= len) {
+            val subNums = Arrays.copyOfRange(nums, index, index + arrLen)
+            if (Arrays.toString(arr).equals(Arrays.toString(subNums))) {
+                index += arrLen
+                isMatch = true
+                break
+            } else {
+                index++
+            }
+        }
+        if (!isMatch) {
+            return false
+        }
+    }
+    return true
 }
 
 /**
